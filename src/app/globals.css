@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Black & Gold VIP Banking Palette */
+    --background: 0 0% 3%;
+    --foreground: 0 0% 97%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 97%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 97%;
+
+    /* Gold primary */
+    --primary: 44 95% 62%;
+    --primary-foreground: 0 0% 5%;
+
+    /* Silver secondary */
+    --secondary: 0 0% 75%;
+    --secondary-foreground: 0 0% 5%;
+
+    --muted: 0 0% 9%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 44 95% 62%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 97%;
+    --border: 44 30% 18%;
+    --input: 0 0% 10%;
+    --ring: 44 95% 62%;
+    --radius: 0.75rem;
+  }
+}
+
+/* ─── Base ──────────────────────────────────────────── */
+body {
+  background-color: #080808;
+  color: #f2f2f2;
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular numbers (DM Mono for financial figures) */
+.num-tabular,
+.font-mono {
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Gold Glassmorphism ────────────────────────────── */
+.glass-panel {
+  background: rgba(8, 8, 8, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 200, 66, 0.12);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 14, 12, 0.95) 0%, rgba(10, 9, 8, 0.98) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 200, 66, 0.10);
+  box-shadow:
+    0 10px 30px -5px rgba(0, 0, 0, 0.7),
+    0 0 0 0.5px rgba(245, 200, 66, 0.05) inset;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(245, 200, 66, 0.30);
+  box-shadow:
+    0 20px 40px -5px rgba(0, 0, 0, 0.8),
+    0 0 25px -5px rgba(245, 200, 66, 0.12),
+    0 0 0 0.5px rgba(245, 200, 66, 0.15) inset;
+  transform: translateY(-2px);
+}
+
+.glass-card-silver:hover {
+  border-color: rgba(192, 192, 192, 0.30);
+  box-shadow:
+    0 20px 40px -5px rgba(0, 0, 0, 0.8),
+    0 0 25px -5px rgba(192, 192, 192, 0.10),
+    0 0 0 0.5px rgba(192, 192, 192, 0.12) inset;
+  transform: translateY(-2px);
+}
+
+/* ─── Neon Glows (Gold / Silver) ───────────────────── */
+.neon-glow-gold {
+  box-shadow: 0 0 24px -4px rgba(245, 200, 66, 0.40);
+}
+
+.neon-glow-silver {
+  box-shadow: 0 0 24px -4px rgba(192, 192, 192, 0.30);
+}
+
+.neon-glow-emerald {
+  box-shadow: 0 0 20px -3px rgba(34, 197, 94, 0.35);
+}
+
+.neon-glow-rose {
+  box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.35);
+}
+
+.neon-border-gold {
+  border-color: rgba(245, 200, 66, 0.50);
+  box-shadow: 0 0 12px rgba(245, 200, 66, 0.20);
+}
+
+.neon-border-silver {
+  border-color: rgba(192, 192, 192, 0.40);
+  box-shadow: 0 0 12px rgba(192, 192, 192, 0.15);
+}
+
+/* ─── Metal grid (Auth pages background) ───────────── */
+.bg-metal-grid {
+  background-size: 50px 50px;
+  background-image:
+    linear-gradient(to right, rgba(245, 200, 66, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 200, 66, 0.025) 1px, transparent 1px);
+}
+
+/* Legacy cyber-grid alias */
+.bg-cyber-grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* ─── Gold Shimmer ──────────────────────────────────── */
+@keyframes shimmer-gold {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer-gold-text {
+  background: linear-gradient(90deg, #92692a 0%, #f5c842 30%, #fde68a 50%, #f5c842 70%, #92692a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-gold 4s linear infinite;
+}
+
+/* Old shimmer still used for buttons */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s infinite;
+}
+
+/* ─── Border Beam (Gold) ────────────────────────────── */
+@keyframes border-beam {
+  100% { offset-distance: 100%; }
+}
+
+.animate-border-beam {
+  animation: border-beam 5s linear infinite;
+}
+
+/* ─── Audio Waveform ────────────────────────────────── */
+@keyframes wave-bar {
+  0%, 100% { height: 4px;  }
+  50%       { height: 26px; }
+}
+
+.animate-wave-1 { animation: wave-bar 0.80s ease-in-out infinite 0.10s; }
+.animate-wave-2 { animation: wave-bar 0.70s ease-in-out infinite 0.30s; }
+.animate-wave-3 { animation: wave-bar 0.90s ease-in-out infinite 0.15s; }
+.animate-wave-4 { animation: wave-bar 0.65s ease-in-out infinite 0.40s; }
+.animate-wave-5 { animation: wave-bar 0.85s ease-in-out infinite 0.25s; }
+
+/* ─── Radar Scan (AI thinking) ──────────────────────── */
+@keyframes radar-scan {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radar-scan 4s linear infinite;
+}
+
+/* ─── Ambient Float (Auth pages) ───────────────────── */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1);       }
+  50%       { transform: translate(12px, -18px) scale(1.04); }
+}
+
+.animate-float-slow {
+  animation: float-slow 14s ease-in-out infinite;
+}
+
+@keyframes float-slow-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1);        }
+  50%       { transform: translate(-12px, 18px) scale(0.96); }
+}
+
+.animate-float-slow-reverse {
+  animation: float-slow-reverse 16s ease-in-out infinite;
+}
+
+/* ─── Gold Pulse (AI FAB) ───────────────────────────── */
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 200, 66, 0.40); }
+  50%       { box-shadow: 0 0 0 12px rgba(245, 200, 66, 0.00); }
+}
+
+.animate-gold-pulse {
+  animation: gold-pulse 2.5s ease-in-out infinite;
+}
+
+/* ─── Custom Scrollbar (Gold on Black) ─────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(245, 200, 66, 0.50); }
+
+/* ─── Text gradient helpers ─────────────────────────── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5c842 0%, #fde68a 50%, #c0a035 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-silver {
+  background: linear-gradient(135deg, #9ca3af 0%, #e5e7eb 50%, #6b7280 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Active sidebar pill ───────────────────────────── */
+.sidebar-active-pill {
+  background: linear-gradient(90deg, rgba(245, 200, 66, 0.15) 0%, rgba(245, 200, 66, 0.05) 100%);
+  border-left: 2px solid #f5c842;
+}
+
+/* ─── Bottom nav item ───────────────────────────────── */
+.bottom-nav-active {
+  color: #f5c842;
+  filter: drop-shadow(0 0 6px rgba(245, 200, 66, 0.5));
+}
