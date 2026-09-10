@@ -2,9 +2,19 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { RegisterSchema } from "@/lib/validations";
+import { checkRateLimit, getClientIp, rateLimitResponse, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const clientIp = getClientIp(req);
+    const rateLimit = checkRateLimit(`register:${clientIp}`, RATE_LIMIT_CONFIGS.AUTH_REGISTER);
+    if (!rateLimit.success) {
+      return rateLimitResponse(
+        rateLimit,
+        `Bạn đã gửi yêu cầu đăng ký quá nhiều lần. Vui lòng thử lại sau ${rateLimit.retryAfterSeconds} giây.`
+      );
+    }
+
     const body = await req.json();
     const parsed = RegisterSchema.safeParse(body);
 

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { processAiFinancialChat, ChatHistoryItem, AiProviderError } from "@/lib/ai/chatbot";
 import { safeAiLog } from "@/lib/ai/gemini-client";
+import { checkRateLimit, getClientIp, rateLimitResponse, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   const requestId = `chat_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -12,6 +13,16 @@ export async function POST(req: Request) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
+    }
+
+    const clientIp = getClientIp(req);
+    const rateLimitKey = `ai_chat:${session.user.id || clientIp}`;
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMIT_CONFIGS.AI_CHAT);
+    if (!rateLimit.success) {
+      return rateLimitResponse(
+        rateLimit,
+        `Trợ lý AI đang tiếp nhận quá nhiều yêu cầu từ bạn. Vui lòng chờ ${rateLimit.retryAfterSeconds} giây trước khi gửi tiếp.`
+      );
     }
 
     const body = await req.json();

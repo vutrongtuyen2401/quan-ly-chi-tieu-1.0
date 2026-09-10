@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAuditAction } from "@/lib/audit";
 
 export async function POST(
   req: Request,
@@ -104,6 +105,20 @@ export async function POST(
       });
 
       return transaction;
+    });
+
+    await logAuditAction({
+      userId: session.user.id,
+      action: "AI_DRAFT_CONFIRM",
+      entity: "AiTransactionDraft",
+      entityId: draftId,
+      details: {
+        transactionId: result.id,
+        amount: Number(amount),
+        type,
+        walletId,
+      },
+      req,
     });
 
     return NextResponse.json({

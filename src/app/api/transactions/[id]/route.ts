@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAuditAction } from "@/lib/audit";
 
 export async function DELETE(
   req: Request,
@@ -46,6 +47,19 @@ export async function DELETE(
       }
 
       await tx.transaction.delete({ where: { id } });
+    });
+
+    await logAuditAction({
+      userId: session.user.id,
+      action: "TRANSACTION_DELETE",
+      entity: "Transaction",
+      entityId: id,
+      details: {
+        amount: existing.amount.toString(),
+        type: existing.type,
+        walletId: existing.walletId,
+      },
+      req,
     });
 
     return NextResponse.json({ success: true, message: "Đã xóa giao dịch và hoàn tất cập nhật số dư ví" });

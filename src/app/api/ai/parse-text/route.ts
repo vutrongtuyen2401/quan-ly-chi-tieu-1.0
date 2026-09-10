@@ -2,12 +2,23 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { parseVietnameseTransaction } from "@/lib/ai/text-parser";
+import { checkRateLimit, getClientIp, rateLimitResponse, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
+    }
+
+    const clientIp = getClientIp(req);
+    const rateLimitKey = `ai_parse_text:${session.user.id || clientIp}`;
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMIT_CONFIGS.AI_PARSE_TEXT);
+    if (!rateLimit.success) {
+      return rateLimitResponse(
+        rateLimit,
+        `Hệ thống nhận diện văn bản AI đang bận. Vui lòng thử lại sau ${rateLimit.retryAfterSeconds} giây.`
+      );
     }
 
     const { text } = await req.json();

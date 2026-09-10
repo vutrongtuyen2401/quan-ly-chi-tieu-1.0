@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
+import { Space_Grotesk, DM_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/providers/session-provider";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  variable: "--font-dm-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "QuanLyChiTieu – Quản Lý Tài Chính Thông Minh",
@@ -14,19 +29,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className="dark h-full antialiased">
-      <head>
-        {/* Space Grotesk + DM Mono from Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="vi" className={`dark h-full antialiased ${spaceGrotesk.variable} ${dmMono.variable}`}>
       <body
-        className="min-h-full bg-[#080808] text-[#f2f2f2] selection:bg-yellow-500/20 selection:text-yellow-200"
-        style={{ fontFamily: "'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
+        className={`min-h-full bg-[#080808] text-[#f2f2f2] selection:bg-yellow-500/20 selection:text-yellow-200 ${spaceGrotesk.className}`}
       >
         <SessionProvider>{children}</SessionProvider>
       </body>

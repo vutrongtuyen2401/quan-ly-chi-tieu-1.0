@@ -115,6 +115,7 @@ model User {
   aiDrafts      AiTransactionDraft[]
   feedbackReports FeedbackReport[]
   chatConversations ChatConversation[]
+  auditLogs     AuditLog[]
 
   @@map("users")
 }
@@ -391,4 +392,23 @@ model ChatMessage {
 
   @@index([conversationId, createdAt])
   @@map("chat_messages")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

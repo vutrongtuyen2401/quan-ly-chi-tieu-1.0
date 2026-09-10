@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAuditAction } from "@/lib/audit";
 
 export async function GET() {
   try {
@@ -54,6 +55,15 @@ export async function PUT(req: Request) {
         status: status !== undefined ? status : undefined,
         role: role !== undefined ? role : undefined,
       },
+    });
+
+    await logAuditAction({
+      userId: session.user.id,
+      action: status !== undefined ? `ADMIN_USER_STATUS_${status}` : `ADMIN_USER_ROLE_${role}`,
+      entity: "User",
+      entityId: id,
+      details: { targetUserId: id, status, role },
+      req,
     });
 
     return NextResponse.json({ success: true, user: updated });

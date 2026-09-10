@@ -221,17 +221,17 @@ async function runTests() {
   assert(typeof weatherData.reply === "string" && weatherData.reply.length > 20, `Nhận phản hồi thời tiết từ Trợ lý AI`);
   assertNoBannedPhrases(weatherData.reply, "Realtime Weather");
   const hasWeatherInfo =
-    weatherData.reply.toLowerCase().includes("hà nội") ||
-    weatherData.reply.toLowerCase().includes("nhiệt độ") ||
-    weatherData.reply.toLowerCase().includes("thời tiết") ||
-    weatherData.reply.includes("°C");
-  assert(hasWeatherInfo, `Phản hồi chứa thông tin thời tiết thực tế tại Hà Nội`);
+    weatherData.reply?.toLowerCase()?.includes("hà nội") ||
+    weatherData.reply?.toLowerCase()?.includes("nhiệt độ") ||
+    weatherData.reply?.toLowerCase()?.includes("thời tiết") ||
+    weatherData.reply?.includes("°C");
+  assert(!!hasWeatherInfo, `Phản hồi chứa thông tin thời tiết thực tế tại Hà Nội`);
   const hasSource =
-    weatherData.reply.toLowerCase().includes("nguồn") ||
-    weatherData.reply.toLowerCase().includes("open-meteo") ||
-    weatherData.reply.toLowerCase().includes("google") ||
-    weatherData.reply.toLowerCase().includes("trạm");
-  assert(hasSource, `Phản hồi có trích dẫn nguồn thông tin thời gian thực`);
+    weatherData.reply?.toLowerCase()?.includes("nguồn") ||
+    weatherData.reply?.toLowerCase()?.includes("open-meteo") ||
+    weatherData.reply?.toLowerCase()?.includes("google") ||
+    weatherData.reply?.toLowerCase()?.includes("trạm");
+  assert(!!hasSource, `Phản hồi có trích dẫn nguồn thông tin thời gian thực`);
 
   // 6c. Kiểm tra Error Handling: Cấm trả HTTP 200 với reply lỗi giả
   console.log("\n6c. Kiểm tra Error Handling: Request không hợp lệ / lỗi phải trả HTTP status phù hợp");

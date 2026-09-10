@@ -79,11 +79,11 @@ node scripts/test-ai-upgrade.mjs
 
 ---
 
-## 5. Tài khoản mẫu để kiểm thử & Trải nghiệm
-| Vai trò | Email | Mật khẩu | Chức năng nổi bật |
-|---|---|---|---|
-| **Demo User** | `demo@quanlychitieu.vn` | `demo123456` | Đầy đủ 4 ví, 9 giao dịch mẫu, ngân sách, tiết kiệm, sổ nợ, chatbot AI lưu lịch sử |
-| **Admin** | `admin@quanlychitieu.vn` | `admin123456` | Truy cập trang Quản trị `/admin`, xem thống kê hệ thống, quản lý khóa/mở tài khoản |
+## 5. Chính Sách Tài Khoản & Môi Trường Thử Nghiệm
+- **Môi trường Production**: Tuyệt đối không sử dụng tài khoản mẫu mặc định. Người dùng tự đăng ký hoặc Quản trị viên khởi tạo tài khoản an toàn thông qua biến môi trường hoặc công cụ quản trị nội bộ. Nút tự động điền tài khoản mẫu bị ẩn hoàn toàn trên giao diện Production.
+- **Môi trường Staging / Local Development**:
+  - Khi cờ `NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS=true` được bật, hệ thống hỗ trợ đăng nhập nhanh phục vụ kiểm thử tích hợp nội bộ.
+  - Mật khẩu thử nghiệm nội bộ được sinh tự động khi chạy seed cơ sở dữ liệu (`npm run db:seed`) trong môi trường phát triển biệt lập.
 
 ---
 

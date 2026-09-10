@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { parseReceiptImage } from "@/lib/ai/receipt-parser";
+import { checkRateLimit, getClientIp, rateLimitResponse, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
+import { validateReceiptImage } from "@/lib/file-validator";
 
 export async function POST(req: Request) {
   try {
@@ -10,9 +12,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
     }
 
+    const clientIp = getClientIp(req);
+    const rateLimitKey = `ai_receipt:${session.user.id || clientIp}`;
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMIT_CONFIGS.AI_PARSE_RECEIPT);
+    if (!rateLimit.success) {
+      return rateLimitResponse(
+        rateLimit,
+        `Bạn đang tải lên hóa đơn quá nhanh. Vui lòng thử lại sau ${rateLimit.retryAfterSeconds} giây.`
+      );
+    }
+
     const { imageBase64, ocrText } = await req.json();
     if (!imageBase64 && !ocrText) {
       return NextResponse.json({ error: "Vui lòng cung cấp ảnh hóa đơn hoặc dữ liệu quét" }, { status: 400 });
+    }
+
+    // Kiểm tra tính hợp lệ của tệp ảnh (MIME thật, dung lượng <= 5MB, kích thước/tỷ lệ)
+    if (imageBase64) {
+      const validation = validateReceiptImage(imageBase64);
+      if (!validation.valid) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
     }
 
     const parsed = await parseReceiptImage(imageBase64 || "", ocrText);

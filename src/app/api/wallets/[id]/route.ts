@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/formatters";
+import { logAuditAction } from "@/lib/audit";
 
 export async function PUT(
   req: Request,
@@ -39,6 +40,15 @@ export async function PUT(
       },
     });
 
+    await logAuditAction({
+      userId: session.user.id,
+      action: "WALLET_UPDATE",
+      entity: "Wallet",
+      entityId: id,
+      details: { name: updated.name, color: updated.color, icon: updated.icon },
+      req,
+    });
+
     return NextResponse.json({ success: true, wallet: serializeBigInt(updated) });
   } catch (error: any) {
     console.error("Lỗi cập nhật ví:", error);
@@ -68,6 +78,15 @@ export async function DELETE(
 
     await prisma.wallet.delete({
       where: { id },
+    });
+
+    await logAuditAction({
+      userId: session.user.id,
+      action: "WALLET_DELETE",
+      entity: "Wallet",
+      entityId: id,
+      details: { deletedWalletName: existing.name },
+      req,
     });
 
     return NextResponse.json({ success: true, message: "Đã xóa ví thành công" });

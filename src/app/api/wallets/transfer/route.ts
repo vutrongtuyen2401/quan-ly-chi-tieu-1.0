@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TransferSchema } from "@/lib/validations";
 import { serializeBigInt } from "@/lib/formatters";
+import { logAuditAction } from "@/lib/audit";
 
 export async function POST(req: Request) {
   try {
@@ -71,6 +72,22 @@ export async function POST(req: Request) {
       });
 
       return transaction;
+    });
+
+    // Ghi nhận Audit Log
+    await logAuditAction({
+      userId: currentUserId,
+      action: "WALLET_TRANSFER",
+      entity: "Transaction",
+      entityId: result.id,
+      details: {
+        sourceWalletId,
+        sourceWalletName: sourceWallet.name,
+        destinationWalletId,
+        destWalletName: destWallet.name,
+        amount: Number(amount),
+      },
+      req,
     });
 
     return NextResponse.json({ success: true, transaction: serializeBigInt(result) }, { status: 201 });

@@ -43,7 +43,10 @@ export default function LoginPage() {
     }
   };
 
+  const isDemoEnabled = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === "true";
+
   const handleQuickDemo = (type: "demo" | "admin") => {
+    if (!isDemoEnabled) return;
     if (type === "demo") {
       setEmail("demo@quanlychitieu.vn");
       setPassword("demo123456");
@@ -140,30 +143,32 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Quick Demo */}
-          <div className="mt-6 pt-5 border-t border-[rgba(245,200,66,0.08)]">
-            <p className="text-[10px] font-bold text-[#4a4030] text-center mb-3 uppercase tracking-widest">
-              Tài khoản mẫu thử nghiệm
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo("demo")}
-                className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[#0f0f0f] border border-[rgba(245,200,66,0.15)] text-[#9a8050] hover:bg-[rgba(245,200,66,0.06)] hover:border-[rgba(245,200,66,0.30)] hover:text-[#f5c842] text-xs font-medium transition-all cursor-pointer"
-              >
-                <UserCheck className="h-3.5 w-3.5" />
-                <span>Demo User</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemo("admin")}
-                className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[#0f0f0f] border border-[rgba(245,200,66,0.15)] text-[#9a8050] hover:bg-[rgba(245,200,66,0.06)] hover:border-[rgba(245,200,66,0.30)] hover:text-[#f5c842] text-xs font-medium transition-all cursor-pointer"
-              >
-                <ShieldCheck className="h-3.5 w-3.5" />
-                <span>Admin User</span>
-              </button>
+          {/* Quick Demo - Only shown in development / staging if explicitly enabled */}
+          {isDemoEnabled && (
+            <div className="mt-6 pt-5 border-t border-[rgba(245,200,66,0.08)]">
+              <p className="text-[10px] font-bold text-[#4a4030] text-center mb-3 uppercase tracking-widest">
+                Tài khoản mẫu thử nghiệm
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemo("demo")}
+                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[#0f0f0f] border border-[rgba(245,200,66,0.15)] text-[#9a8050] hover:bg-[rgba(245,200,66,0.06)] hover:border-[rgba(245,200,66,0.30)] hover:text-[#f5c842] text-xs font-medium transition-all cursor-pointer"
+                >
+                  <UserCheck className="h-3.5 w-3.5" />
+                  <span>Demo User</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemo("admin")}
+                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[#0f0f0f] border border-[rgba(245,200,66,0.15)] text-[#9a8050] hover:bg-[rgba(245,200,66,0.06)] hover:border-[rgba(245,200,66,0.30)] hover:text-[#f5c842] text-xs font-medium transition-all cursor-pointer"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Admin User</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Register Link */}
           <div className="mt-5 text-center text-xs text-[#5a5a5a]">

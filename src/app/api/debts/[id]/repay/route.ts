@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DebtRepaymentSchema } from "@/lib/validations";
 import { serializeBigInt } from "@/lib/formatters";
+import { logAuditAction } from "@/lib/audit";
 
 export async function POST(
   req: Request,
@@ -78,6 +79,20 @@ export async function POST(
       }
 
       return repayment;
+    });
+
+    await logAuditAction({
+      userId: session.user.id,
+      action: "DEBT_REPAYMENT",
+      entity: "DebtBook",
+      entityId: id,
+      details: {
+        personName: debt.personName,
+        debtType: debt.type,
+        repaymentAmount: Number(amount),
+        walletId,
+      },
+      req,
     });
 
     return NextResponse.json({ success: true, repayment: serializeBigInt(result) }, { status: 201 });

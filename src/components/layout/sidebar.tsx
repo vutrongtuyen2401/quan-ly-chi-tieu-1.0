@@ -180,7 +180,7 @@ export function Sidebar() {
                 {session?.user?.name || "Người dùng"}
               </p>
               <p className="text-[11px] text-[#5a5a5a] truncate">
-                {session?.user?.email || "demo@quanlychitieu.vn"}
+                {session?.user?.email || "Tài khoản cá nhân"}
               </p>
             </div>
           </div>
